@@ -36,6 +36,7 @@ class Customer extends Model
     public function isB2B(): bool
     {
         return $this->type === 'b2b';
+        
     }
 
     public function isB2C(): bool

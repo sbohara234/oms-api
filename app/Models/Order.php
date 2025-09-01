@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Events\OrderStatusUpdated;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -63,5 +64,17 @@ class Order extends Model
     public function OrderItems(): HasMany
     {
         return $this->hasMany(OrderItem::class);
+    }
+
+    protected static function booted()
+    {
+        static::updating(function ($order) {
+            if ($order->isDirty('status')) {
+                $oldStatus = $order->getOriginal('status');
+                $newStatus = $order->status;
+
+                event(new OrderStatusUpdated($order, $oldStatus, $newStatus));
+            }
+        });
     }
 }
