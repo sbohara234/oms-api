@@ -151,7 +151,7 @@ class OrderController extends Controller
      *     @OA\Response(response=401, description="Unauthorized")
      * )
      */
-    public function store(Request $request)
+    public function store(OrderRequest $request)
     {
 
         try {
@@ -221,7 +221,7 @@ class OrderController extends Controller
      */
     public function updateStatus(Request $request, string $id)
     {
-        // try{
+        try{
         $user = Auth::user();
 
         $order = $this->orderservice->findOrderById($id);
@@ -231,7 +231,11 @@ class OrderController extends Controller
         $status = $request->status;
         $this->orderservice->updateOrderStatus($order,$status);
         return $this->messageResponse('Order status updated successfully.' );
-    // 
+        } catch (\Exception $e) {
+            logger($e->getMessage());
+            return $this->errorResponse($e->getMessage());
+        }
+    
     }
 
 

@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class OrderRequest extends FormRequest
 {
@@ -11,7 +12,7 @@ class OrderRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -21,16 +22,29 @@ class OrderRequest extends FormRequest
      */
     public function rules(): array
     {
-        // $rules = [
-        //     'customer_id' => 'required|integer',
-        //     'shipping_address'=>'required|string|max:100',
-        //     'billing_address'=>'required|string|max:100',
-        //     'payment_methos'=>'required'
+        
+        $rules =  [
+            'customer_id' => [
+                'required',
+                'integer',
+                // ensure customer belongs to current tenant
+                Rule::exists('customers', 'id')->where(function ($query) {
+                    $query->where('tenant_id', $this->user()->tenant_id);
+                }),
+            ],           
 
-        // ];
+            'items' => ['required', 'array', 'min:1'],
+            'items.*.product_id' => ['required', 'integer', 'exists:products,id'],
+            'items.*.quantity' => ['required', 'integer', 'min:1'],
+        ];
 
+        return $rules;
+    }
 
-        // return $rules;
-        return [];
+    public function messages(): array
+    {
+        return [
+            'customer_id.exists' => 'The selected customer is invalid for this tenant.',
+        ];
     }
 }
