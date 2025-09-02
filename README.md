@@ -1,3 +1,21 @@
+## Clone the Project
+git clone https://github.com/sbohara234/oms-api.git
+
+## Install Dependencies
+## PHP Dependencies
+    `composer install`
+    `npm install`
+## Environment Configuration
+    
+    Copy .env.example to .env
+## Generate Application Key
+
+`php artisan key:generate`
+## Run Database Migrations & Seeders
+
+`php artisan migrate --seed`
+
+
 ##  Design Choices
 # RESTful Design:
  Clean, resource-oriented endpoints following REST conventions
