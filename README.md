@@ -57,7 +57,7 @@ Testable: Each strategy can be tested independently
 # Notification System
 Laravel Notifications: Built-in system with queue support
 
-Multiple Channels: Support for email, database, and future channels
+Multiple Channels: Support for email
 
 Extensible: Easy to add new notification types and channels
 
